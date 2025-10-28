@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.NotificationAdd
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -33,6 +34,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.classify.hublink.ui.screens.HomeScreen
+import com.classify.hublink.ui.screens.NewEventScreen
 import com.classify.hublink.ui.screens.ProfileScreen
 
 enum class Destination(
@@ -42,6 +44,7 @@ enum class Destination(
     val contentDescription: String
 ) {
     HOME("home", "Home", Icons.Default.Home, "Home"),
+    NEW_EVENT("new-event", "New Event", Icons.Default.NotificationAdd, "New Event"),
     PROFILE("profile", "Profile", Icons.Default.Person, "Profile"),
 }
 
@@ -104,6 +107,9 @@ fun NavigationBar() {
             }
             composable(route = Destination.PROFILE.route) {
                 ProfileScreen()
+            }
+            composable(route = Destination.NEW_EVENT.route) {
+                NewEventScreen(navController = navController)
             }
         }
     }

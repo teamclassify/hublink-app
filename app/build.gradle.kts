@@ -45,6 +45,7 @@ android {
 
 dependencies {
     implementation(libs.firebase.database)
+    implementation(libs.androidx.ui)
     val nav_version = "2.9.3"
 
     implementation(libs.androidx.core.ktx)
