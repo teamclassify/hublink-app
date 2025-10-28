@@ -38,9 +38,9 @@ import com.classify.hublink.viewmodel.AuthViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(
+fun RegisterScreen(
     authViewModel: AuthViewModel = viewModel(),
-    onNavigateToRegister: () -> Unit
+    onNavigateToLogin: () -> Unit
 ) {
     val inputName = remember { mutableStateOf("") }
     val inputPassword = remember { mutableStateOf("") }
@@ -106,10 +106,10 @@ fun LoginScreen(
             )
 
             CustomButton(
-                text = "Login",
+                text = "Register",
                 textColor = MaterialTheme.colorScheme.surface,
                 buttonColor = MaterialTheme.colorScheme.primary,
-                onTap = { authViewModel.signIn(inputName.value, inputPassword.value) }
+                onTap = { authViewModel.register(inputName.value, inputPassword.value) }
             )
 
             HorizontalDivider(
@@ -117,10 +117,10 @@ fun LoginScreen(
             )
 
             CustomButton(
-                text = "Register",
+                text = "Or Login",
                 textColor = MaterialTheme.colorScheme.primary,
                 buttonColor = MaterialTheme.colorScheme.surface,
-                onTap = onNavigateToRegister
+                onTap = onNavigateToLogin
             )
 
 //            HorizontalDivider(

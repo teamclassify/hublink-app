@@ -1,7 +1,10 @@
 package com.classify.hublink.viewmodel
 
+import android.content.ContentValues.TAG
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
+import com.classify.hublink.HublinkApplication
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -59,6 +62,25 @@ class AuthViewModel : ViewModel() {
                     _authState.value = AuthState.Error(
                         task.exception?.message ?: "Error desconocido"
                     )
+                }
+            }
+    }
+
+    fun register(email: String, password: String) {
+        _authState.value = AuthState.Loading
+
+        auth.createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    _authState.value = AuthState.Success(auth.currentUser?.uid ?: "")
+                    Log.d(TAG, "createUserWithEmail:success")
+                } else {
+                    Log.w(TAG, "createUserWithEmail:failure", task.exception)
+                    Toast.makeText(
+                        HublinkApplication().baseContext,
+                        "Authentication failed.",
+                        Toast.LENGTH_SHORT,
+                    ).show()
                 }
             }
     }
