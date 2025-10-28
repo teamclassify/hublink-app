@@ -1,16 +1,20 @@
 package com.classify.hublink
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.classify.hublink.ui.components.NavigationBar
+import com.classify.hublink.ui.screens.LoadingScreen
+import com.classify.hublink.ui.screens.LoginScreen
 import com.classify.hublink.ui.theme.HublinkTheme
+import com.classify.hublink.viewmodel.AuthState
+import com.classify.hublink.viewmodel.AuthViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,12 +29,15 @@ class MainActivity : ComponentActivity() {
 }
 
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun App() {
-    Surface (
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Text(text = "Hublink")
+fun App(viewModel: AuthViewModel = viewModel()) {
+    val authState by viewModel.authState.collectAsState()
+
+    when (authState) {
+        is AuthState.Idle -> LoginScreen()
+        is AuthState.Error -> LoginScreen()
+        is AuthState.Loading -> LoadingScreen()
+        is AuthState.Success -> NavigationBar()
     }
 }
