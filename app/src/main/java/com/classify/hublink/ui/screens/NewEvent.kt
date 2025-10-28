@@ -1,5 +1,6 @@
 package com.classify.hublink.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -45,6 +46,7 @@ import com.classify.hublink.data.entities.Event
 import com.classify.hublink.ui.AppViewModelProvider
 import com.classify.hublink.ui.components.CustomButton
 import com.classify.hublink.ui.components.Destination
+import com.classify.hublink.ui.components.ImageUploader
 import com.classify.hublink.ui.theme.HublinkTheme
 import com.classify.hublink.viewmodel.EventViewModel
 import java.text.SimpleDateFormat
@@ -63,6 +65,7 @@ fun NewEventScreen(
     var title by remember { mutableStateOf("") }
     var location by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
+    var imageUrl by remember { mutableStateOf<String?>(null) }
 
     var showDatePicker by remember { mutableStateOf(false) }
     val datePickerState = rememberDatePickerState()
@@ -176,6 +179,16 @@ fun NewEventScreen(
                     )
                 }
 
+                Column {
+                    ImageUploader(
+                        onImageUrlReady = { url ->
+                            Log.d("ImageUploader", "Image URL: $url")
+                            imageUrl = url
+                        },
+                        uploadImageToSupabase = viewModel::uploadImageToSupabase
+                    )
+                }
+
                 CustomButton(
                     onTap = {
                         viewModel.addEvent(
@@ -184,6 +197,7 @@ fun NewEventScreen(
                                 location = location,
                                 description = description,
                                 date = selectedDate,
+                                image = imageUrl,
                                 time = "" + timePickerState.hour + ":" + timePickerState.minute
                             )
                         )
