@@ -3,9 +3,11 @@ package com.classify.hublink.ui.components
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -13,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.classify.hublink.ui.AppViewModelProvider
+import com.classify.hublink.ui.theme.HublinkTheme
 import com.classify.hublink.viewmodel.EventViewModel
 
 @Composable
@@ -21,18 +24,23 @@ fun ListOfEvents(
 ) {
     val events by viewModel.events.collectAsState()
 
-    Column(
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        events.forEach { event ->
-            EventItem(
-                event
-            )
 
-            HorizontalDivider(
-                modifier = Modifier.height(1.dp).fillMaxWidth(),
-                thickness = DividerDefaults.Thickness, color = MaterialTheme.colorScheme.outline
-            )
+
+    Column {
+        Text(
+            text = "Events",
+            style = MaterialTheme.typography.titleLarge,
+            modifier = Modifier.padding(bottom = HublinkTheme.dimens.paddingMedium)
+        )
+
+        Column(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            events.forEach { event ->
+                EventItem(
+                    event
+                )
+            }
         }
     }
 }

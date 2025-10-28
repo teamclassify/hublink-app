@@ -102,7 +102,7 @@ fun NewEventScreen(
             OutlinedTextField(
                 value = selectedDate,
                 onValueChange = { },
-                label = { Text("DOB") },
+                label = { Text("Date") },
                 readOnly = true,
                 trailingIcon = {
                     IconButton(onClick = { showDatePicker = !showDatePicker }) {
