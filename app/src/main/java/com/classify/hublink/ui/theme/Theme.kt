@@ -37,6 +37,8 @@ private val LightColorScheme = lightColorScheme(
     surface = Color(0xFFFFFFFF),
     onSurface = Color(0xFF1C1B1F),
     background = Color(0xFFFFFFFF),
+    outline = Color(0xFFE5E1E6),
+
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
