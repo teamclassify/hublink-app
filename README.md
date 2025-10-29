@@ -74,16 +74,12 @@ The Supabase client reads from `BuildConfig` fields in `config/SupabaseClient.kt
 - `BuildConfig.SUPABASE_URL`
 - `BuildConfig.SUPABASE_KEY`
 
-Add them to your module `build.gradle(.kts)` using buildConfigFields or a `local.properties`-backed approach, for example:
+In `local.properties`, add the following:
 
 ```kotlin
-// build.gradle.kts (module: app)
-android {
-    defaultConfig {
-        buildConfigField("String", "SUPABASE_URL", '"https://YOUR-PROJECT.supabase.co"')
-        buildConfigField("String", "SUPABASE_KEY", '"YOUR_ANON_PUBLIC_KEY"')
-    }
-}
+// local.properties
+SUPABASE_URL=xxx
+SUPABASE_KEY=xxx
 ```
 
 In Supabase, create a Storage bucket named `events` and enable public access (or implement signed URLs if required).
