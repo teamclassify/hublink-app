@@ -6,12 +6,13 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -24,13 +25,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
+import com.classify.hublink.ui.theme.HublinkTheme
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun ImageUploader(
     onImageUrlReady: (String) -> Unit,
-    uploadImageToSupabase: suspend (context: Context, uri: Uri) -> String?
+    uploadImageToSupabase: suspend (context: Context, uri: Uri) -> String?,
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -41,13 +43,31 @@ fun ImageUploader(
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent(),
-        onResult = { uri -> imageUri = uri }
+        onResult = { uri ->
+            uri?.let { uri ->
+                scope.launch {
+                    isUploading = true
+                    imageUrl = uploadImageToSupabase(context, uri)
+                    isUploading = false
+
+                    imageUrl?.let { url ->
+                        onImageUrlReady(url)
+                    }
+                }
+            }
+        }
     )
 
+
+
     Column {
-        Button(onClick = { launcher.launch("image/*") }) {
-            Text("Select Image")
-        }
+        CustomButton(
+            modifier = Modifier.padding(bottom = HublinkTheme.dimens.paddingMedium),
+            text = "Select Image",
+            textColor = MaterialTheme.colorScheme.primary,
+            buttonColor = MaterialTheme.colorScheme.surface,
+            onTap = { launcher.launch("image/*") }
+        )
 
         imageUri?.let { uri ->
             GlideImage(
@@ -56,31 +76,14 @@ fun ImageUploader(
                 modifier = Modifier
                     .size(150.dp)
                     .clip(RoundedCornerShape(10.dp))
+                    .fillMaxWidth()
             )
 
             Spacer(Modifier.height(8.dp))
-
-            Button(onClick = {
-                isUploading = true
-                scope.launch {
-                    val url = uploadImageToSupabase(context, uri)
-                    if (url != null) {
-                        imageUrl = url
-                        onImageUrlReady(url)
-                    }
-                    isUploading = false
-                }
-            }) {
-                Text("Upload to Supabase")
-            }
         }
 
         if (isUploading) {
             CircularProgressIndicator()
-        }
-
-        imageUrl?.let {
-            Text("Uploaded: $it")
         }
     }
 }
