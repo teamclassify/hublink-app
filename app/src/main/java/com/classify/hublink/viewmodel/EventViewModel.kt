@@ -35,6 +35,12 @@ class EventViewModel(private val repository: EventsRepository) : ViewModel() {
         }
     }
 
+    fun enrollToEvent(event: Event) {
+        viewModelScope.launch {
+            repository.enrollToEvent(event)
+        }
+    }
+
 
     suspend fun uploadImageToSupabase(
         context: Context,
