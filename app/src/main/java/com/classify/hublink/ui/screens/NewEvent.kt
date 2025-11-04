@@ -32,7 +32,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -59,8 +58,6 @@ fun NewEventScreen(
     viewModel: EventViewModel = viewModel(factory = AppViewModelProvider.Factory),
     navController: NavHostController
 ) {
-    val scope = rememberCoroutineScope()
-
     var isDialogTimeOpen by remember { mutableStateOf(false) }
     var title by remember { mutableStateOf("") }
     var location by remember { mutableStateOf("") }
@@ -87,6 +84,12 @@ fun NewEventScreen(
             .verticalScroll(rememberScrollState())
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
+            Text(
+                modifier = Modifier.padding(bottom = HublinkTheme.dimens.paddingNormal),
+                text = "Information",
+                fontWeight = FontWeight.Bold
+            )
+
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth()
                     .padding(bottom = HublinkTheme.dimens.paddingSmall),
@@ -97,11 +100,31 @@ fun NewEventScreen(
 
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth()
-                    .padding(bottom = HublinkTheme.dimens.paddingMedium),
+                    .padding(bottom = HublinkTheme.dimens.paddingSmall),
                 value = location,
                 onValueChange = { location = it },
                 label = { Text("Event location") }
             )
+
+            Column(
+                modifier = Modifier
+                    .height(150.dp)
+                    .padding(bottom = HublinkTheme.dimens.paddingMedium)
+            ) {
+                OutlinedTextField(
+                    value = description,
+                    onValueChange = { newText -> description = newText },
+                    label = { Text("Event description") },
+                    modifier = Modifier
+                        .fillMaxWidth().fillMaxHeight(),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Default,
+                    ),
+                    singleLine = false,
+                    maxLines = 10
+                )
+            }
 
 
             Text(
@@ -159,26 +182,6 @@ fun NewEventScreen(
             }
 
             Column {
-                Column(
-                    modifier = Modifier
-                        .height(150.dp)
-                        .padding(bottom = HublinkTheme.dimens.paddingNormal)
-                ) {
-                    OutlinedTextField(
-                        value = description,
-                        onValueChange = { newText -> description = newText },
-                        label = { Text("Event description") },
-                        modifier = Modifier
-                            .fillMaxWidth().fillMaxHeight(),
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Text,
-                            imeAction = ImeAction.Default,
-                        ),
-                        singleLine = false,
-                        maxLines = 10
-                    )
-                }
-
                 Column {
                     ImageUploader(
                         onImageUrlReady = { url ->
