@@ -7,7 +7,7 @@ import androidx.compose.ui.unit.dp
 @Immutable
 data class Dimens(
     val borderNormal: Dp = 4.dp,
-    val buttonHeightSmall: Dp = 40.dp,
+    val buttonHeightSmall: Dp = 30.dp,
     val buttonHeightNormal: Dp = 56.dp,
     val iconSizeSmall: Dp = 24.dp,
     val iconSizeNormal: Dp = 36.dp,
@@ -28,7 +28,7 @@ val DefaultsDimens = Dimens()
 
 val TabletDimens = Dimens(
     borderNormal = 4.dp,
-    buttonHeightSmall = 40.dp,
+    buttonHeightSmall = 30.dp,
     buttonHeightNormal = 64.dp,
     iconSizeSmall = 36.dp,
     iconSizeNormal = 48.dp,
