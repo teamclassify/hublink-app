@@ -41,21 +41,22 @@ fun ProfileScreen(authViewModel: AuthViewModel = viewModel()) {
                 )
             }
 
-            Box(
-                modifier = Modifier
-                    .padding(vertical = 20.dp)
-            ) {
-                Column {
+
+                Column(
+                    modifier = Modifier
+                        .padding(vertical = 20.dp)
+                ) {
                     Text(
                         text = "Información Personal",
                         fontSize = 25.sp
                     )
                     Text(
-                        text = "Nombre: Alessandro"
+                        text = "Nombre: \nAlessandro"
+                    )
+                    Text(
+                        text = "Correo electrónico: ${authViewModel.userEmail}"
                     )
                 }
-
-            }
 
             Button(
                 onClick = {
