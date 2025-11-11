@@ -64,9 +64,13 @@ class EventsRepository(private val database: FirebaseDatabase) {
 
     fun addNewEvent(event: Event) {
         if (auth.currentUser != null) {
-            eventsRef
-                .push()
-                .setValue(event)
+            val newEventRef = eventsRef.push()
+            val eventId = newEventRef.key
+
+            if (eventId != null) {
+                event.id = eventId
+                newEventRef.setValue(event)
+            }
         }
     }
 
