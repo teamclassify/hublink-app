@@ -1,14 +1,15 @@
 package com.classify.hublink.data.repositories
 
+import android.util.Log
 import com.classify.hublink.data.entities.Event
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.childEvents
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.tasks.await
 
 class EventsRepository(private val database: FirebaseDatabase) {
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
@@ -75,6 +76,21 @@ class EventsRepository(private val database: FirebaseDatabase) {
                 .child("events")
                 .push()
                 .setValue(event)
+        }
+    }
+
+    suspend fun getEventById(id: String): Event? {
+        return try {
+            val snapshot: DataSnapshot = eventsRef.child(id).get().await()
+
+            val event = snapshot.getValue(Event::class.java)
+
+            Log.i("firebase", "Got value: $event")
+            event
+
+        } catch (e: Exception) {
+            Log.e("firebase", "Error getting data", e)
+            null
         }
     }
 }
