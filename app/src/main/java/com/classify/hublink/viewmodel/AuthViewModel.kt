@@ -27,6 +27,9 @@ class AuthViewModel : ViewModel() {
     private val _isLogged = MutableStateFlow(false)
     val isLogged: StateFlow<Boolean> = _isLogged
 
+    val userEmail: String?
+        get() = auth.currentUser?.email
+
     private val authStateListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
         val user = firebaseAuth.currentUser
 
@@ -84,7 +87,6 @@ class AuthViewModel : ViewModel() {
                 }
             }
     }
-
     fun signOut() {
         auth.signOut()
     }
