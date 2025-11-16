@@ -14,13 +14,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import com.classify.hublink.ui.AppViewModelProvider
 import com.classify.hublink.ui.theme.HublinkTheme
 import com.classify.hublink.viewmodel.EventViewModel
 
 @Composable
 fun ListOfEvents(
-    viewModel: EventViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    viewModel: EventViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    navController: NavHostController
 ) {
     val events by viewModel.events.collectAsState()
 
@@ -38,7 +40,8 @@ fun ListOfEvents(
         ) {
             events.forEach { event ->
                 EventItem(
-                    event
+                    event,
+                    onClick = { e -> navController.navigate("events/" + e.id) }
                 )
             }
         }

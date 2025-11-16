@@ -30,9 +30,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.classify.hublink.ui.screens.EventDetailScreen
 import com.classify.hublink.ui.screens.HomeScreen
 import com.classify.hublink.ui.screens.MyEventsScreen
 import com.classify.hublink.ui.screens.NewEventScreen
@@ -42,12 +45,14 @@ enum class Destination(
     val route: String,
     val label: String,
     val icon: ImageVector,
-    val contentDescription: String
+    val contentDescription: String,
+    val visible: Boolean
 ) {
-    HOME("home", "Home", Icons.Default.Home, "Home"),
-    MY_EVENTS("my-events", "My Events", Icons.Default.CalendarMonth, "My Events"),
-    NEW_EVENT("new-event", "New Event", Icons.Default.NotificationAdd, "New Event"),
-    PROFILE("profile", "Profile", Icons.Default.Person, "Profile"),
+    HOME("home", "Home", Icons.Default.Home, "Home", true),
+    MY_EVENTS("my-events", "My Events", Icons.Default.CalendarMonth, "My Events", true),
+    NEW_EVENT("new-event", "New Event", Icons.Default.NotificationAdd, "New Event", true),
+    EVENT_DETAIL("events/{eventId}", "Event Detail", Icons.Default.NotificationAdd, "Event Detail", false),
+    PROFILE("profile", "Profile", Icons.Default.Person, "Profile", true),
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -75,25 +80,27 @@ fun NavigationBar() {
                     containerColor = MaterialTheme.colorScheme.background
                 ) {
                     Destination.entries.forEach { destination ->
-                        NavigationBarItem(
-                            selected = selectedDestination == destination.route,
-                            onClick = {
-                                navController.navigate(route = destination.route)
-                                selectedDestination = destination.route
-                            },
-                            icon = {
-                                Icon(
-                                    destination.icon,
-                                    contentDescription = destination.contentDescription
+                        if (destination.visible) {
+                            NavigationBarItem(
+                                selected = selectedDestination == destination.route,
+                                onClick = {
+                                    navController.navigate(route = destination.route)
+                                    selectedDestination = destination.route
+                                },
+                                icon = {
+                                    Icon(
+                                        destination.icon,
+                                        contentDescription = destination.contentDescription
+                                    )
+                                },
+                                label = { Text(destination.label) },
+                                colors = NavigationBarItemDefaults.colors(
+                                    indicatorColor = MaterialTheme.colorScheme.primaryContainer,
+                                    selectedTextColor = MaterialTheme.colorScheme.primary,
+                                    selectedIconColor = MaterialTheme.colorScheme.primary
                                 )
-                            },
-                            label = { Text(destination.label) },
-                            colors = NavigationBarItemDefaults.colors(
-                                indicatorColor = MaterialTheme.colorScheme.primaryContainer,
-                                selectedTextColor = MaterialTheme.colorScheme.primary,
-                                selectedIconColor = MaterialTheme.colorScheme.primary
                             )
-                        )
+                        }
                     }
                 }
             }
@@ -103,7 +110,7 @@ fun NavigationBar() {
 
         NavHost(navController = navController, startDestination = Destination.HOME.route, modifier = Modifier.padding(innerPadding)) {
             composable(route = Destination.HOME.route) {
-                HomeScreen()
+                HomeScreen(navController = navController)
             }
             composable(route = Destination.PROFILE.route) {
                 ProfileScreen()
@@ -113,6 +120,20 @@ fun NavigationBar() {
             }
             composable(route = Destination.NEW_EVENT.route) {
                 NewEventScreen(navController = navController)
+            }
+            composable(
+                route = Destination.EVENT_DETAIL.route,
+                arguments = listOf(navArgument("eventId") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val eventId = backStackEntry.arguments?.getString("eventId")
+
+                if (eventId != null) {
+                    EventDetailScreen(
+                        eventId = eventId,
+                    )
+                } else {
+                    // Manejar el caso de error (e.g., mostrar un mensaje)
+                }
             }
         }
     }

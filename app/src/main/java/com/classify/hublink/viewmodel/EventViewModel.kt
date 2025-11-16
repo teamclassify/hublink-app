@@ -10,8 +10,10 @@ import com.classify.hublink.data.repositories.EventsRepository
 import io.github.jan.supabase.storage.storage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -28,6 +30,9 @@ class EventViewModel(private val repository: EventsRepository) : ViewModel() {
             initialValue = emptyList()
         )
 
+    private val _eventDetailState = MutableStateFlow<EventDetailState>(EventDetailState.Loading)
+    val eventDetailState: StateFlow<EventDetailState> = _eventDetailState.asStateFlow()
+
 
     fun addEvent(event: Event) {
         viewModelScope.launch {
@@ -38,6 +43,18 @@ class EventViewModel(private val repository: EventsRepository) : ViewModel() {
     fun enrollToEvent(event: Event) {
         viewModelScope.launch {
             repository.enrollToEvent(event)
+        }
+    }
+
+    suspend fun getEventById(id: String) {
+        viewModelScope.launch {
+            val event = repository.getEventById(id)
+
+            if (event != null) {
+                _eventDetailState.value = EventDetailState.Success(event)
+            } else {
+                _eventDetailState.value = EventDetailState.Error("Evento no encontrado")
+            }
         }
     }
 
@@ -64,4 +81,10 @@ class EventViewModel(private val repository: EventsRepository) : ViewModel() {
             }
         }
     }
+}
+
+sealed class EventDetailState {
+    object Loading : EventDetailState()
+    data class Success(val event: Event) : EventDetailState()
+    data class Error(val message: String) : EventDetailState()
 }

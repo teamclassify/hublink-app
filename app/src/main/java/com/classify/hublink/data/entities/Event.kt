@@ -1,6 +1,7 @@
 package com.classify.hublink.data.entities
 
 data class Event(
+    var id: String = "",
     val title: String = "",
     val description: String? = "",
     val date: String? = "",

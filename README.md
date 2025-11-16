@@ -8,6 +8,9 @@ Hublink is an Android app built with Kotlin and Jetpack Compose that provides us
 - Firebase Authentication, Firebase Realtime Database
 - Supabase Storage (via `io.github.jan.supabase` client)
 
+<img width="1233" height="672" alt="hublink" src="https://github.com/user-attachments/assets/ef40dc8b-4a80-4fba-926b-f927758285d4" />
+
+
 ## Project Structure
 ```
 app/src/main/java/com/classify/hublink/
