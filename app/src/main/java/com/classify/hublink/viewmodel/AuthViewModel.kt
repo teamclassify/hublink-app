@@ -6,9 +6,12 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import com.classify.hublink.HublinkApplication
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import com.classify.hublink.data.entities.UserProfile
 
 sealed class AuthState {
     object Idle : AuthState()
@@ -19,16 +22,18 @@ sealed class AuthState {
 
 class AuthViewModel : ViewModel() {
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
-
     private val _authState = MutableStateFlow<AuthState>(AuthState.Idle)
     val authState: StateFlow<AuthState> = _authState.asStateFlow()
-
-    val currentUser = auth.currentUser
     private val _isLogged = MutableStateFlow(false)
+
+    val currentUserProfile = MutableStateFlow<UserProfile?>(null)
+
     val isLogged: StateFlow<Boolean> = _isLogged
 
     val userEmail: String?
         get() = auth.currentUser?.email
+
+    private val db = Firebase.firestore
 
     private val authStateListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
         val user = firebaseAuth.currentUser
@@ -89,5 +94,40 @@ class AuthViewModel : ViewModel() {
     }
     fun signOut() {
         auth.signOut()
+    }
+
+    /**
+     * This method checks if the user profile exists in the
+     * Firestore database.
+     * result -> True if the user profile exists, false otherwise
+     */
+    fun checkUserProfile(onResult: (Boolean) -> Unit) {
+        val uid = auth.currentUser?.uid
+        if (uid != null) {
+            db.collection("users").document(uid).get() // <-- Use db here
+                .addOnSuccessListener { document ->
+                    onResult(document.exists())
+                }
+                .addOnFailureListener {
+                    onResult(false)
+                }
+        }
+    }
+
+    /**
+     * This method saves the user profile in the Firestore
+     * database.
+     */
+    fun saveUserProfile(userProfile: UserProfile, onSuccess: () -> Unit) {
+        val uid = auth.currentUser?.uid ?: return
+        val profileToSave = userProfile.copy(id = uid, email = auth.currentUser?.email ?: "")
+
+        db.collection("users").document(uid).set(profileToSave) // <-- And here
+            .addOnSuccessListener {
+                onSuccess()
+            }
+            .addOnFailureListener { e ->
+                // Handle error
+            }
     }
 }

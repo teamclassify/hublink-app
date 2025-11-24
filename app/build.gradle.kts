@@ -54,7 +54,17 @@ android {
 }
 
 dependencies {
+
+    // 1. Añadimos el BOM (si no estaba), es la mejor práctica para manejar versiones de Firebase.
+    // Usaremos una versión genérica compatible.
+    implementation(platform("com.google.firebase:firebase-bom:33.1.0")) // <-- Versión de referencia
+
+    // Antiguas dependencias de Firebase
     implementation(libs.firebase.database)
+
+    implementation("com.google.firebase:firebase-firestore-ktx")
+
+
     implementation(libs.androidx.ui)
     val nav_version = "2.9.3"
     val supabase_version = "3.2.5"
