@@ -18,6 +18,7 @@ import androidx.compose.material.icons.filled.RocketLaunch
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Work
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator // Importar para posible indicador de carga
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -40,6 +41,20 @@ fun ProfileScreen(authViewModel: AuthViewModel = viewModel()) {
     val scope = rememberCoroutineScope()
     val userProfile by authViewModel.currentUserProfile.collectAsState()
 
+    LaunchedEffect(key1 = Unit) {
+        authViewModel.loadUserProfile()
+    }
+
+    if (userProfile == null) {
+        Box(
+            modifier = Modifier.fillMaxWidth().padding(20.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator()
+        }
+        return
+    }
+
     Surface(
         modifier = Modifier.padding(20.dp)
     ) {
@@ -52,10 +67,12 @@ fun ProfileScreen(authViewModel: AuthViewModel = viewModel()) {
                     .fillMaxWidth().align(Alignment.CenterHorizontally)
                     .padding(vertical = 20.dp)
             ) {
+                // Usamos el nombre del perfil para el título
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    text = "Nombre de Usuario",
-                    textAlign = TextAlign.Center
+                    text = userProfile?.name ?: "Usuario Desconocido",
+                    textAlign = TextAlign.Center,
+                    fontSize = 20.sp
                 )
             }
 
@@ -69,58 +86,27 @@ fun ProfileScreen(authViewModel: AuthViewModel = viewModel()) {
                     modifier = Modifier.padding(bottom = 20.dp)
                 )
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 5.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Person,
-                        contentDescription = "User"
-                    )
-                    Spacer(modifier = Modifier.width(15.dp))
+                ProfileRow(
+                    icon = Icons.Default.Person,
+                    label = "Nombre:",
+                    value = userProfile?.name
+                )
 
-                    Text(
-                        text = "Nombre:\n ${userProfile?.name}"
-                    )
-                }
+                ProfileRow(
+                    icon = Icons.Default.Mail,
+                    label = "Correo electrónico:",
+                    value = authViewModel.userEmail
+                )
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 5.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Mail,
-                        contentDescription = "Email"
-                    )
-                    Spacer(modifier = Modifier.width(15.dp))
-
-                    Text(
-                        text = "Correo electrónico: ${authViewModel.userEmail}"
-                    )
-                }
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 5.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Phone,
-                        contentDescription = "Phone"
-                    )
-                    Spacer(modifier = Modifier.width(15.dp))
-
-                    Text(
-                        text = "Numero de telefono: \n${userProfile?.phone}"
-                    )
-                }
+                // Número de teléfono
+                ProfileRow(
+                    icon = Icons.Default.Phone,
+                    label = "Numero de telefono:",
+                    value = userProfile?.phone
+                )
             }
 
+            // --- Formación e Intereses ---
             Column(
                 modifier = Modifier
                     .padding(vertical = 30.dp)
@@ -131,58 +117,29 @@ fun ProfileScreen(authViewModel: AuthViewModel = viewModel()) {
                     modifier = Modifier.padding(bottom = 20.dp)
                 )
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 5.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.School,
-                        contentDescription = "University"
-                    )
-                    Spacer(modifier = Modifier.width(15.dp))
+                // Universidad
+                ProfileRow(
+                    icon = Icons.Default.School,
+                    label = "Universidad:",
+                    value = userProfile?.university
+                )
 
-                    Text(
-                        text = "Universidad:\n${userProfile?.university}"
-                    )
-                }
+                // Carrera
+                ProfileRow(
+                    icon = Icons.Default.Work,
+                    label = "Carrera:",
+                    value = userProfile?.career
+                )
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 5.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Work,
-                        contentDescription = "Program"
-                    )
-                    Spacer(modifier = Modifier.width(15.dp))
-
-                    Text(
-                        text = "Carrera: \n${userProfile?.career}"
-                    )
-                }
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 5.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.RocketLaunch,
-                        contentDescription = "Hobbies"
-                    )
-                    Spacer(modifier = Modifier.width(15.dp))
-
-                    Text(
-                        text = "Intereses: \n${userProfile?.interests}"
-                    )
-                }
+                // Intereses
+                ProfileRow(
+                    icon = Icons.Default.RocketLaunch,
+                    label = "Intereses:",
+                    value = userProfile?.interests
+                )
             }
 
+            // --- Redes Sociales ---
             Column(
                 modifier = Modifier
                     .padding(vertical = 30.dp)
@@ -193,39 +150,21 @@ fun ProfileScreen(authViewModel: AuthViewModel = viewModel()) {
                     modifier = Modifier.padding(bottom = 20.dp)
                 )
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 5.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Person,
-                        contentDescription = "User"
-                    )
-                    Spacer(modifier = Modifier.width(15.dp))
+                // LinkedIn
+                ProfileRow(
+                    icon = Icons.Default.Cases, // Cambiado a un icono más representativo
+                    label = "Linkedin:",
+                    value = userProfile?.linkedin
+                )
 
-                    Text(
-                        text = "Linkedin:\n ${userProfile?.linkedin}"
-                    )
-                }
+                // Github
+                ProfileRow(
+                    icon = Icons.Default.Mail, // Cambiado a un icono más representativo (aunque quizás un ícono de Github sería mejor)
+                    label = "Github:",
+                    value = userProfile?.github
+                )
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 5.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Mail,
-                        contentDescription = "Email"
-                    )
-                    Spacer(modifier = Modifier.width(15.dp))
-
-                    Text(
-                        text = "Github: \n${userProfile?.github}"
-                    )
-                }
+                Spacer(modifier = Modifier.padding(vertical = 10.dp)) // Espacio antes del botón
 
                 Button(
                     onClick = {
@@ -235,9 +174,31 @@ fun ProfileScreen(authViewModel: AuthViewModel = viewModel()) {
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(text = "CerrarSesión")
+                    Text(text = "Cerrar Sesión")
                 }
             }
         }
+    }
+}
+
+// 📐 Componente auxiliar para reducir la redundancia y mejorar la lectura
+@Composable
+fun ProfileRow(icon: androidx.compose.ui.graphics.vector.ImageVector, label: String, value: String?) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 5.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = label.replace(":", "") // Usar la etiqueta como descripción
+        )
+        Spacer(modifier = Modifier.width(15.dp))
+
+        // Mostrar 'No especificado' o un string vacío si el valor es nulo
+        Text(
+            text = "$label\n ${value ?: "No especificado"}"
+        )
     }
 }

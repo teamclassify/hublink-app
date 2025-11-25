@@ -18,9 +18,8 @@ import com.classify.hublink.viewmodel.AuthViewModel
 @Composable
 fun CompleteProfileScreen(
     authViewModel: AuthViewModel = viewModel(),
-    onProfileSaved: () -> Unit // Función para navegar a la pantalla principal
+    onProfileSaved: () -> Unit
 ) {
-    // Estados para almacenar la entrada del usuario
     var name by remember { mutableStateOf("") }
     var phone by remember { mutableStateOf("") }
     var university by remember { mutableStateOf("") }
@@ -53,7 +52,6 @@ fun CompleteProfileScreen(
                 modifier = Modifier.padding(bottom = 16.dp)
             )
 
-            // --- SECCIÓN INFORMACIÓN PERSONAL ---
             Text("Información Personal", fontWeight = FontWeight.Bold, modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp))
 
             OutlinedTextField(value = name, onValueChange = { name = it }, label = { Text("Nombre Completo") }, modifier = Modifier.fillMaxWidth())
@@ -62,7 +60,6 @@ fun CompleteProfileScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // --- SECCIÓN FORMACIÓN E INTERESES ---
             Text("Formación e Intereses", fontWeight = FontWeight.Bold, modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp))
             OutlinedTextField(value = university, onValueChange = { university = it }, label = { Text("Universidad") }, modifier = Modifier.fillMaxWidth())
             Spacer(modifier = Modifier.height(8.dp))
@@ -72,7 +69,7 @@ fun CompleteProfileScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // --- SECCIÓN REDES SOCIALES ---
+
             Text("Redes Sociales (Usuario)", fontWeight = FontWeight.Bold, modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp))
             OutlinedTextField(value = linkedin, onValueChange = { linkedin = it }, label = { Text("LinkedIn Username") }, modifier = Modifier.fillMaxWidth())
             Spacer(modifier = Modifier.height(8.dp))
@@ -96,7 +93,7 @@ fun CompleteProfileScreen(
                     )
                     authViewModel.saveUserProfile(userProfile) {
                         isLoading = false
-                        onProfileSaved() // Llama a la navegación al Home
+                        onProfileSaved()
                     }
                 },
                 enabled = isButtonEnabled && !isLoading,

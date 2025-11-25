@@ -130,4 +130,31 @@ class AuthViewModel : ViewModel() {
                 // Handle error
             }
     }
+
+    /**
+     * This method fetches the user profile from Firestore
+     * and updates the currentUserProfile StateFlow.
+     */
+    fun loadUserProfile() {
+        val uid = auth.currentUser?.uid
+        if (uid != null) {
+            db.collection("users").document(uid).get()
+                .addOnSuccessListener { document ->
+                    if (document.exists()) {
+                        val profile = document.toObject(UserProfile::class.java)
+                        currentUserProfile.value = profile
+                        Log.d(TAG, "Profile loaded successfully: ${profile?.name}")
+                    } else {
+                        currentUserProfile.value = null
+                        Log.w(TAG, "User profile document does not exist for UID: $uid")
+                    }
+                }
+                .addOnFailureListener { e ->
+                    currentUserProfile.value = null
+                    Log.e(TAG, "Error fetching user profile", e)
+                }
+        } else {
+            currentUserProfile.value = null
+        }
+    }
 }
