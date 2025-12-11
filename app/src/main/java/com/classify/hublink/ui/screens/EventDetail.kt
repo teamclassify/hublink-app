@@ -25,7 +25,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
@@ -79,7 +81,10 @@ fun EventDetailScreen(
 
                         Text(
                             text = event.title,
-                            style = MaterialTheme.typography.headlineLarge
+                            style = MaterialTheme.typography.titleLarge.copy(
+                                lineHeight = 32.sp
+                            ),
+
                         )
 
                         Spacer(modifier = Modifier.height(8.dp))
@@ -87,14 +92,19 @@ fun EventDetailScreen(
                         event.description?.let {
                             Text(
                                 text = it,
-                                style = MaterialTheme.typography.bodyMedium
+                                style = MaterialTheme.typography.bodyMedium.copy(
+                                    lineHeight = 22.sp
+                                ),
+                                textAlign = TextAlign.Justify
                             )
                             Spacer(modifier = Modifier.height(12.dp))
                         }
 
                         Text(
                             text = "Organizador",
-                            style = MaterialTheme.typography.titleMedium
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                lineHeight = 22.sp
+                            )
                         )
 
                         Spacer(modifier = Modifier.height(4.dp))
@@ -104,7 +114,9 @@ fun EventDetailScreen(
                             event.organizerName?.takeIf { it.isNotBlank() }?.let {
                                 Text(
                                     text = it,
-                                    style = MaterialTheme.typography.bodyMedium
+                                    style = MaterialTheme.typography.bodyMedium.copy(
+                                        lineHeight = 22.sp
+                                    )
                                 )
                             }
 
@@ -112,6 +124,7 @@ fun EventDetailScreen(
                                 Text(
                                     text = email,
                                     style = MaterialTheme.typography.bodyMedium.copy(
+                                        lineHeight = 22.sp,
                                         color = MaterialTheme.colorScheme.primary
                                     )
                                 )
@@ -120,7 +133,9 @@ fun EventDetailScreen(
                             if (event.organizerName.isNullOrBlank() && event.organizerEmail.isNullOrBlank()) {
                                 Text(
                                     text = "Sin información del organizador",
-                                    style = MaterialTheme.typography.bodyMedium
+                                    style = MaterialTheme.typography.bodyMedium.copy(
+                                        lineHeight = 22.sp
+                                    )
                                 )
                             }
                         }
@@ -128,29 +143,45 @@ fun EventDetailScreen(
                         Spacer(modifier = Modifier.height(16.dp))
                         Text(
                             text = "Fecha",
-                            style = MaterialTheme.typography.titleMedium
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                lineHeight = 22.sp
+                            )
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
                             text = event.date ?: "Sin fecha",
-                            style = MaterialTheme.typography.bodyMedium
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                lineHeight = 22.sp
+                            )
                         )
-                        Spacer(modifier = Modifier.height(2.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Text(
+                            text = "Hora",
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                lineHeight = 22.sp
+                            )
+                        )
                         Text(
                             text = formatEventTime(event.time),
-                            style = MaterialTheme.typography.bodyMedium
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                lineHeight = 22.sp
+                            )
                         )
 
                         Spacer(modifier = Modifier.height(16.dp))
 
                         Text(
                             text = "Lugar",
-                            style = MaterialTheme.typography.titleMedium
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                lineHeight = 22.sp
+                            )
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
                             text = event.location ?: "Sin ubicación",
-                            style = MaterialTheme.typography.bodyMedium
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                lineHeight = 22.sp
+                            )
                         )
 
                         Spacer(modifier = Modifier.height(16.dp))
