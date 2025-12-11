@@ -56,6 +56,7 @@ android {
 dependencies {
     implementation(libs.firebase.database)
     implementation(libs.androidx.ui)
+    implementation(libs.androidx.runtime)
     val nav_version = "2.9.3"
     val supabase_version = "3.2.5"
     val ktor_version = "3.3.1"
