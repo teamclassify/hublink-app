@@ -65,6 +65,17 @@ fun DynamicTopBar(navController: NavHostController) {
             )
         }
 
+        Destination.EVENT_DETAIL.route -> {
+            TopAppBar(
+                title = { Text("Detalle del evento") },
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                    }
+                }
+            )
+        }
+
         Destination.PROFILE.route -> {
             TopAppBar(
                 title = { Text("Profile") },

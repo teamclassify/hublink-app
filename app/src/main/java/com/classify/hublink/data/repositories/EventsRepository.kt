@@ -69,6 +69,9 @@ class EventsRepository(private val database: FirebaseDatabase) {
 
             if (eventId != null) {
                 event.id = eventId
+                event.organizerId = auth.currentUser!!.uid
+                event.organizerName = auth.currentUser!!.displayName ?: ""
+                event.organizerEmail = auth.currentUser!!.email ?: ""
                 newEventRef.setValue(event)
             }
         }
