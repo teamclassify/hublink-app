@@ -8,4 +8,7 @@ data class Event(
     val time: String? = "",
     val location: String? = "",
     val image: String? = "",
+    val organizerId: String = "",
+    val organizerName: String = "",
+    val organizerEmail: String = ""
 )
