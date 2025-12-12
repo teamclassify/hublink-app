@@ -30,6 +30,15 @@ class EventViewModel(private val repository: EventsRepository) : ViewModel() {
             initialValue = emptyList()
         )
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    var enrolledEvents: StateFlow<List<Event>> = repository
+        .allEnrolledEvents
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
+
     private val _eventDetailState = MutableStateFlow<EventDetailState>(EventDetailState.Loading)
     val eventDetailState: StateFlow<EventDetailState> = _eventDetailState.asStateFlow()
 

@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -37,6 +38,7 @@ import com.classify.hublink.ui.AppViewModelProvider
 import com.classify.hublink.ui.components.ActionButton
 import com.classify.hublink.viewmodel.EventDetailState
 import com.classify.hublink.viewmodel.EventViewModel
+import android.widget.Toast
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
@@ -44,16 +46,23 @@ fun EventDetailScreen(
     eventId: String,
     viewModel: EventViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
+    val context = LocalContext.current
     LaunchedEffect(eventId) {
         viewModel.getEventById(eventId)
     }
 
     val state by viewModel.eventDetailState.collectAsState()
+    val enrolledEvents by viewModel.enrolledEvents.collectAsState()
 
     Surface(
         color = MaterialTheme.colorScheme.surface
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
+            val successEvent = (state as? EventDetailState.Success)?.event
+            val isEnrolled = successEvent?.let { event ->
+                enrolledEvents.any { it.id == event.id }
+            } ?: false
+
             when (state) {
                 is EventDetailState.Loading -> {
                     CircularProgressIndicator()
@@ -189,14 +198,25 @@ fun EventDetailScreen(
                 }
             }
 
-            ActionButton(
-                text = "Inscribirse",
-                icon = Icons.Default.Add,
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(16.dp),
-                onClick = {}
-            )
+            if (!isEnrolled) {
+                ActionButton(
+                    text = "Inscribirse",
+                    icon = Icons.Default.Add,
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(16.dp),
+                    onClick = {
+                        successEvent?.let { event ->
+                            viewModel.enrollToEvent(event)
+                            Toast.makeText(
+                                context,
+                                "Inscripción exitosa",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                )
+            }
         }
     }
 }
