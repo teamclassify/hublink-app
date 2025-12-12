@@ -116,7 +116,7 @@ fun NavigationBar() {
                 ProfileScreen()
             }
             composable(route = Destination.MY_EVENTS.route) {
-                MyEventsScreen()
+                MyEventsScreen(navController = navController)
             }
             composable(route = Destination.NEW_EVENT.route) {
                 NewEventScreen(navController = navController)
